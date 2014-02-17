@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Bootstrap Share Button Generator</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-switch.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+      .network-settings{height:0px;overflow:hidden;-webkit-transition:.5s linear height;}
+      .network-active .network-settings{height:auto;}
+
+      .buttons{
+        font-size:30px;
+      }
+
+      .bsb-button{
+        display:inline-block;
+        width: 1em;
+        height: 1em;
+        text-align: center;
+        line-height: 0;
+        border-radius:.5em;
+        background-color:black;
+        color:white;
+      }
+      .bsb-button-icon{font-size:.5em;padding:.5em;}
+      .bsb-button-facebook .bsb-button-icon{padding-left:.44em;}
+      .bsb-button-twitter .bsb-button-icon{padding-left:.48em;}
+
+    </style>
+  </head>
+
+  <body>
+    <div class='container'><h1>Bootstrap Share Button Generator</h1></div>
+    <div class="container">
+      <div class='row'>
+        <div class='col-xs-6'>
+          <h4>Settings</h4>
+          <div class='networks'>
+          </div>
+        </div>
+        <div class='col-xs-6'>
+          <h4>Output</h4>
+          <div class='buttons'></div>
+          <div class='html'></div>
+        </div>
+      </div>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-switch.min.js"></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js'></script>
+    <script type='text/template' id='template-network-facebook'>
+      <input type="checkbox" name="active" class='network-activate'>
+      <span class='network-name'>Facebook</span>
+      <div class='network-settings'><form><table>
+        <tr><td>Href</td><td><input name='href'/></td></tr>
+        <tr><td>Width</td><td><input name='width' value='400'/></td></tr>
+        <tr><td>Height</td><td><input name='height' value='500'/></td></tr>
+      </table><form></div>
+    </script>
+    <script type='text/template' id='template-network-twitter'>
+      <input type="checkbox" name="active" class='network-activate'>
+      <span class='network-name'>Twitter</span>
+      <div class='network-settings'><form><table>
+        <tr><td>Href</td><td><input name='href'/></td></tr>
+        <tr><td>Width</td><td><input name='width' value='400'/></td></tr>
+        <tr><td>Height</td><td><input name='height' value='500'/></td></tr>
+      </table><form></div>
+    </script>
+    <script type='text/template' id='template-buttons'>
+      <% _.each( data, function( model ){ console.log(model.attributes.name); %>
+          <span class='bsb-button bsb-button-<%- model.attributes.name %>'>
+            <i class="bsb-button-icon fa fa-<%- model.attributes.name %>"></i>
+          </span>
+      <% }); %>
+    </script>
+    <script>
+      _.templateSettings.variable = "data";
+
+      NetworksCollection = Backbone.Collection.extend({
+        initialize:function(){
+          this.on('add',networksView.add,networksView)
+        }
+      });
+      NetworksView = Backbone.View.extend({
+        el:'.networks'
+        ,add:function(model){
+          var networkView = new NetworkView({model:model});
+          this.$el.append(networkView.$el);
+        }
+      })
+      NetworkModel = Backbone.Model.extend({ 
+        initialize:function(){
+          this.attributes.buttonModel = new ButtonModel(this.attributes);
+        }
+      });
+      NetworkView = Backbone.View.extend({
+        tagName:'div'
+        ,className:'network'
+        ,events:{
+          'switchChange .network-activate':'activate'
+          ,'keyup input':'settingsUpdated'
+          ,'keydown input':'settingsUpdated'
+        },initialize:function(){
+          var networkView=this;
+          this.$el.addClass('network-'+this.model.attributes.name);
+          
+          var template = _.template($('#template-network-'+this.model.attributes.name).html())
+          this.$el.append(template());
+
+          this.$form = this.$el.find('form');
+          var $activate = this.$el.find('.network-activate');
+          $activate.bootstrapSwitch('size','mini');
+
+          this.settingsUpdated();
+        },activate:function(e,data){
+            var value = data.value;
+            if(value){
+              this.$el.addClass('network-active')
+              buttonsCollection.add(this.model.attributes.buttonModel)
+            }else{
+              this.$el.removeClass('network-active')
+              buttonsCollection.remove(this.model.attributes.buttonModel)
+            }
+          },settingsUpdated:function(){
+            this.model.attributes.settings = this.$form.serializeArray()
+          }
+      })
+      ButtonsCollection = Backbone.Collection.extend({
+        initialize:function(){
+          this.on('add',buttonsView.render,buttonsView);
+          this.on('remove',buttonsView.render,buttonsView);
+        }
+      })
+      ButtonModel = Backbone.Model.extend()
+      ButtonsView = Backbone.View.extend({
+        el:'.buttons'
+        ,template: _.template($('#template-buttons').html())
+        ,render:function(x,collection){
+          this.$el.html(this.template(collection.models))
+        }
+      })
+    </script>
+    <script>
+      networksView = new NetworksView;
+      networksCollection = new NetworksCollection;
+      buttonsView = new ButtonsView;
+      buttonsCollection = new ButtonsCollection;
+    </script>
+    <script>
+      networksCollection.add(new NetworkModel({
+        name:'facebook'
+      }));
+      networksCollection.add(new NetworkModel({
+        name:'twitter'
+      }));
+    </script>
+  </body>
+</html>
