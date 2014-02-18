@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Bootstrap Share Button Generator</title>
+    <title>Share Button Generator</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -25,45 +25,77 @@
     <style>
       .network-settings{height:0px;overflow:hidden;-webkit-transition:.5s linear height;}
       .network-active .network-settings{height:auto;}
+      .network input,.network textarea{width:100%;}
+      .network td:first-child{width:80px;}
 
       .buttons{
         font-size:30px;
       }
-
-      .bsb-button{
-        display:inline-block;
-        width: 1em;
-        height: 1em;
-        text-align: center;
-        line-height: 0;
-        border-radius:.5em;
-        background-color:black;
-        color:white;
-      }
-      .bsb-button-icon{font-size:.5em;padding:.5em;}
-      .bsb-button-facebook .bsb-button-icon{padding-left:.44em;}
-      .bsb-button-twitter .bsb-button-icon{padding-left:.48em;}
-
     </style>
+    <link rel="stylesheet" href="css/sbg.css"/>
+    <script src='js/sbg.js'></script>
   </head>
 
   <body>
-    <div class='container'><h1>Bootstrap Share Button Generator</h1></div>
+    <div class='container'>
+      <h1>Share Button Generator</h1>
+      <p>
+        I got tired of looking up sharing APIs everytime I wanted some simple share buttons, so I built this tool.
+      </p>
+    </div>
+    <div class='container'>
+      <h4>Installation</h4>
+      <ol>
+        <li>Include <a href="http://fontawesome.io/">Font Awesome</a> if you haven't already 
+          <code>&lt;link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/&gt;</code>
+        </li>
+        <li>
+          Download and include the css and js 
+          <ul>
+            <li></li>
+            <li></li>
+          </ul>
+        </li>
+        <li>Include the HTML from the generator</li>
+        <li>Call <code>sbg()</code> after the HTML (and necessary AJAX calls)</li>
+      </ol>
+    </div>
     <div class="container">
       <div class='row'>
-        <div class='col-xs-6'>
+        <div class='col-md-4'>
           <h4>Settings</h4>
-          <div class='networks'>
+          <div class='networks'><form>
+          </form></div>
+        </div>
+        <div class='col-md-8'>
+          <div class="output">
+            <h4>Preview</h4>
+            <div class='buttons'></div>
+            <h4>HTML</h4>
+            <pre><code class='html'></code></pre>
+          </div>
+          <div>
+            <h4>Questions/Comments</h4>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+                var disqus_shortname = 'sharebuttongenerator'; // required: replace example with your forum shortname
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
           </div>
         </div>
-        <div class='col-xs-6'>
-          <h4>Output</h4>
-          <div class='buttons'></div>
-          <div class='html'></div>
-        </div>
       </div>
-    </div><!-- /.container -->
+    </div>
 
+    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -74,57 +106,115 @@
     <script src='http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js'></script>
     <script src='http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js'></script>
     <script type='text/template' id='template-network-facebook'>
-      <input type="checkbox" name="active" class='network-activate'>
-      <span class='network-name'>Facebook</span>
-      <div class='network-settings'><form><table>
-        <tr><td>Href</td><td><input name='href'/></td></tr>
-        <tr><td>Width</td><td><input name='width' value='400'/></td></tr>
-        <tr><td>Height</td><td><input name='height' value='500'/></td></tr>
+      <h5 class='network-name'>
+        <input type="checkbox" name="active" class='network-activate' checked>
+        Facebook
+      </h5>
+      <div class='network-settings'><form><table class='table'>
+        <tr><td>URL</td><td><input name='url' value='http://sharebuttongenerator.aakilfernandes.com//'/></td></tr>
+        <tr><td>Title</td><td><input name='title' value='Share Button Generator'/></td></tr>
+        <tr><td>Summary</td><td><textarea name='summary'>Create simple share buttons, no strings attached</textarea></td></tr>
+        <tr><td>Image</td><td><input name='image' value='http://openclipart.org/image/200px/svg_to_png/172854/addButton.png'/></td></tr>
+        <tr><td>Width</td><td><input name='width' value='600'/></td></tr>
+        <tr><td>Height</td><td><input name='height' value='368'/></td></tr>
       </table><form></div>
     </script>
     <script type='text/template' id='template-network-twitter'>
-      <input type="checkbox" name="active" class='network-activate'>
-      <span class='network-name'>Twitter</span>
-      <div class='network-settings'><form><table>
-        <tr><td>Href</td><td><input name='href'/></td></tr>
-        <tr><td>Width</td><td><input name='width' value='400'/></td></tr>
-        <tr><td>Height</td><td><input name='height' value='500'/></td></tr>
+      <h5 class='network-name'>
+        <input type="checkbox" name="active" class='network-activate' checked>
+        Twitter
+      </h5>
+      <div class='network-settings'><form><table class='table'>
+        <tr><td>Text</td><td><input name='text' value='Create simple share buttons, no strings attached'/></td></tr>
+        <tr><td>Via</td><td><input name='via' value='aakilfernandes'/></td></tr>
+        <tr><td>Hashtags</td><td><input name='hashtags' value='sharing,simple'/></td></tr>
+        <tr><td>Width</td><td><input name='width' value='600'/></td></tr>
+        <tr><td>Height</td><td><input name='height' value='258'/></td></tr>
+      </table><form></div>
+    </script>
+    <script type='text/template' id='template-network-linkedin'>
+      <h5 class='network-name'>
+        <input type="checkbox" name="active" class='network-activate' checked>
+        LinkedIn
+      </h5>
+      <div class='network-settings'><form><table class='table'>
+        <tr><td>Url</td><td><input name='url' value='http://sharebuttongenerator.aakilfernandes.com/'/></td></tr>
+        <tr><td>Title</td><td><input name='title' value='Share Button Generator'/></td></tr>
+        <tr><td>Source</td><td><input name='source' value='Aakil Fernandes'/></td></tr>
+        <tr><td>Summary</td><td><textarea name='summary'>Create simple share buttons, no strings attached</textarea></td></tr>
+        <tr><td>Width</td><td><input name='width' value='585'/></td></tr>
+        <tr><td>Height</td><td><input name='height' value='471'/></td></tr>
+      </table><form></div>
+    </script>
+    <script type='text/template' id='template-network-google-plus'>
+      <h5 class='network-name'>
+        <input type="checkbox" name="active" class='network-activate' checked>
+        Google Plus
+      </h5>
+      <div class='network-settings'><form><table class='table'>
+        <tr><td>Url</td><td><input name='url' value='http://sharebuttongenerator.aakilfernandes.com/'/></td></tr>
+        <tr><td>Width</td><td><input name='width' value='500'/></td></tr>
+        <tr><td>Height</td><td><input name='height' value='505'/></td></tr>
+      </table><form></div>
+    </script>
+    <script type='text/template' id='template-network-pinterest'>
+      <h5 class='network-name'>
+        <input type="checkbox" name="active" class='network-activate' checked>
+        Pinterest
+      </h5>
+      <div class='network-settings'><form><table class='table'>
+        <tr><td>Url</td><td><input name='url' value='http://sharebuttongenerator.aakilfernandes.com/'/></td></tr>
+        <tr><td>Media</td><td><input name='media' value='http://openclipart.org/image/200px/svg_to_png/172854/addButton.png'/></td></tr>
+        <tr><td>Description</td><td><textarea name='description'>Create simple share buttons, no strings attached</textarea></td></tr>
+        <tr><td>Width</td><td><input name='width' value='750'/></td></tr>
+        <tr><td>Height</td><td><input name='height' value='322'/></td></tr>
+      </table><form></div>
+    </script>
+    <script type='text/template' id='template-network-email'>
+      <h5 class='network-name'>
+        <input type="checkbox" name="active" class='network-activate' checked>
+        Email
+      </h5>
+      <div class='network-settings'><form><table class='table'>
+        <tr><td>Subject</td><td><input name='subject' value='Create simple share buttons'/></td></tr>
+        <tr><td>body</td><td><textarea name='body'>No strings attached, visit http://sharebuttongenerator.aakilfernandes.com</textarea></td></tr>
       </table><form></div>
     </script>
     <script type='text/template' id='template-buttons'>
-      <% _.each( data, function( model ){ console.log(model.attributes.name); %>
-          <span class='bsb-button bsb-button-<%- model.attributes.name %>'>
-            <i class="bsb-button-icon fa fa-<%- model.attributes.name %>"></i>
-          </span>
+      <% _.each( data, function( model ){ if(!model.attributes.isActive){return;}%>
+<a class="sbg-button sbg-button-<%- model.attributes.name %>" <%= model.attributes.settingsDataAttrs %>>
+  <i class="sbg-button-icon fa fa-<%- model.attributes.icon %>"></i>
+</a>
       <% }); %>
     </script>
+
     <script>
       _.templateSettings.variable = "data";
 
+      NetworkModel = Backbone.Model.extend({
+        defaults:{isActive:true}
+      });
       NetworksCollection = Backbone.Collection.extend({
-        initialize:function(){
-          this.on('add',networksView.add,networksView)
-        }
+        model: NetworkModel
       });
       NetworksView = Backbone.View.extend({
         el:'.networks'
-        ,add:function(model){
+        ,initialize:function(){
+          this.collection.on('add',this.add,this)
+        },add:function(model){
           var networkView = new NetworkView({model:model});
           this.$el.append(networkView.$el);
         }
       })
-      NetworkModel = Backbone.Model.extend({ 
-        initialize:function(){
-          this.attributes.buttonModel = new ButtonModel(this.attributes);
-        }
-      });
       NetworkView = Backbone.View.extend({
         tagName:'div'
-        ,className:'network'
+        ,className:'network network-active'
         ,events:{
           'switchChange .network-activate':'activate'
           ,'keyup input':'settingsUpdated'
           ,'keydown input':'settingsUpdated'
+          ,'keyup textarea':'settingsUpdated'
+          ,'keydown textarea':'settingsUpdated'
         },initialize:function(){
           var networkView=this;
           this.$el.addClass('network-'+this.model.attributes.name);
@@ -138,46 +228,76 @@
 
           this.settingsUpdated();
         },activate:function(e,data){
-            var value = data.value;
-            if(value){
+            var isActive = data.value;
+            this.model.set({isActive:isActive})
+            if(isActive){
               this.$el.addClass('network-active')
-              buttonsCollection.add(this.model.attributes.buttonModel)
             }else{
               this.$el.removeClass('network-active')
-              buttonsCollection.remove(this.model.attributes.buttonModel)
             }
           },settingsUpdated:function(){
-            this.model.attributes.settings = this.$form.serializeArray()
+            var settings = this.$form.serializeArray() 
+            , settingsKeys = _.pluck(settings,'name').join(',')
+            , settingsDataAttrs = ' data-sbg-network=\"'+this.model.attributes.name+'\" '
+
+            _.each(settings,function(setting){
+              settingsDataAttrs+=
+                ' data-sbg-'+setting.name+'=\"'+setting.value.split('"').join('&quot;')+'\" ';
+            })
+
+            this.model.set({
+              settings:this.$form.serializeArray()
+              ,settingsDataAttrs:settingsDataAttrs
+            })
           }
       })
-      ButtonsCollection = Backbone.Collection.extend({
-        initialize:function(){
-          this.on('add',buttonsView.render,buttonsView);
-          this.on('remove',buttonsView.render,buttonsView);
+      OutputView = Backbone.View.extend({
+        el:'.output'
+        ,buttonsTemplate: _.template($('#template-buttons').html())
+        ,initialize:function(){
+          this.$buttons=this.$el.find('.buttons');
+          this.$html=this.$el.find('.html');
+          this.collection.on('change:isActive',this.render,this)
+          this.collection.on('change:settings',this.render,this)
+          this.render();
         }
-      })
-      ButtonModel = Backbone.Model.extend()
-      ButtonsView = Backbone.View.extend({
-        el:'.buttons'
-        ,template: _.template($('#template-buttons').html())
-        ,render:function(x,collection){
-          this.$el.html(this.template(collection.models))
+        ,render:function(){
+          var buttons = this.buttonsTemplate(this.collection.models).trim();
+
+          this.$buttons.html(buttons)
+          this.$html.html(_.escape(buttons))
+
+          sbg();
         }
       })
     </script>
     <script>
-      networksView = new NetworksView;
       networksCollection = new NetworksCollection;
-      buttonsView = new ButtonsView;
-      buttonsCollection = new ButtonsCollection;
+      networksView = new NetworksView({collection:networksCollection});
+      outputView = new OutputView({collection:networksCollection});
     </script>
     <script>
-      networksCollection.add(new NetworkModel({
-        name:'facebook'
-      }));
-      networksCollection.add(new NetworkModel({
-        name:'twitter'
-      }));
+      networksCollection.add([
+        new NetworkModel({
+          name:'facebook'
+          ,icon:'facebook'
+        }),new NetworkModel({
+          name:'twitter'
+          ,icon:'twitter'
+        }),new NetworkModel({
+          name:'linkedin'
+          ,icon:'linkedin'
+        }),new NetworkModel({
+          name:'google-plus'
+          ,icon:'google-plus'
+        }),new NetworkModel({
+          name:'pinterest'
+          ,icon:'pinterest'
+        }),new NetworkModel({
+          name:'email'
+          ,icon:'envelope'
+        })
+      ]);
     </script>
   </body>
 </html>
