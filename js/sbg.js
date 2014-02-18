@@ -4,7 +4,7 @@ function sbg(){
 	for(var i=0;i<buttons.length;i++){
 		var button = buttons[i]
 
-		if(button.hasAttribute('data-sbg-isBinded')){return}
+		if(button.hasAttribute('data-sbg-isBinded')){continue}
 		button.setAttribute('data-sbg-isBinded','true')
 
 		var network = button.getAttribute('data-sbg-network')
